@@ -1,4 +1,4 @@
-DSimpleDAO
+GerenciarmeSDAO
 ==========
 
-simple data access framework written in java
+simple data object access framework written in java

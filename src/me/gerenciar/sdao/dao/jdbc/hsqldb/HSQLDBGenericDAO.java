@@ -41,6 +41,14 @@ public abstract class HSQLDBGenericDAO<T extends Serializable> extends JDBCGener
 	}
 	
 	@Override
+	public T selectOne(Connection connection, Object... identifiers) throws Exception
+	{
+		String sql = "SELECT * FROM " + getLeftEscape() + getTableName() + getRightEscape() + " WHERE " + getIdentifiersColumnsTokensSequence();
+		
+		return getBean(executeQuery(connection, sql, identifiers));
+	}
+	
+	@Override
 	public List<T> selectAll(Connection connection, long starterIndex, long endIndex) throws Exception
 	{
 		List<DAOFilter> daoFilters = null;

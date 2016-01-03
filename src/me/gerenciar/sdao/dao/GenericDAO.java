@@ -14,6 +14,8 @@ public interface GenericDAO<T extends Serializable>
 	
 	public abstract int delete(Connection connection, T bean) throws Exception;
 	
+	public abstract T selectOne(Connection connection, Object... identifiers) throws Exception;
+	
 	public abstract List<T> selectAll(Connection connection, long starterIndex, long endIndex) throws Exception;
 	
 	public abstract List<T> select(Connection connection, long starterIndex, long endIndex, List<DAOFilter> daoFilters) throws Exception;

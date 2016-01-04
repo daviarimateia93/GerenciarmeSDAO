@@ -146,7 +146,23 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 		return generatedColumns.toArray(new String[generatedColumns.size()]);
 	}
 	
-	protected abstract T parseBean(ResultSet rs) throws Exception;
+	protected abstract void parseBean(ResultSet resultSet, T bean) throws Exception;
+	
+	protected T parseBean(ResultSet resultSet) throws Exception
+	{
+		try
+		{
+			T bean = type.newInstance();
+			
+			parseBean(resultSet, bean);
+			
+			return bean;
+		}
+		catch(InstantiationException | IllegalAccessException exception)
+		{
+			return null;
+		}
+	}
 	
 	// Delete grouped records, based on updateBean, from database.
 	// Should compare which records from selectedBean are not in updateBean, and
@@ -159,9 +175,9 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 	protected abstract T mergeBeanOnUpdateToInsert(T updateBean, T selectedBean);
 	
 	// Set generated keys on bean
-	protected void mergeGeneratedKeys(T bean, ResultSet rs) throws Exception
+	protected void mergeGeneratedKeys(T bean, ResultSet resultSet) throws Exception
 	{
-		if(rs.next())
+		if(resultSet.next())
 		{
 			for(String generatedColumn : getGeneratedColumns())
 			{
@@ -176,7 +192,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 						if(generated.value().equals(generatedColumn))
 						{
 							field.setAccessible(true);
-							field.set(bean, getColumnValue(generatedColumn, field, bean, rs));
+							field.set(bean, getColumnValue(generatedColumn, field, bean, resultSet));
 							
 							break;
 						}
@@ -223,7 +239,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 		return MapHelper.filterMapIncluding(getGroupColumns(), map);
 	}
 	
-	protected T getBean(ResultSet rs)
+	protected T getBean(ResultSet resultSet)
 	{
 		try
 		{
@@ -234,19 +250,19 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			{
 				do
 				{
-					rs.next();
+					resultSet.next();
 					
 					lastBean = bean;
 				}
-				while(rs.getRow() > 0 && (bean = checkMergeBean(lastBean, parseBean(rs))) != null);
+				while(resultSet.getRow() > 0 && (bean = checkMergeBean(lastBean, parseBean(resultSet))) != null);
 				
 				bean = lastBean;
 			}
 			else
 			{
-				if(rs.next())
+				if(resultSet.next())
 				{
-					bean = parseBean(rs);
+					bean = parseBean(resultSet);
 				}
 			}
 			
@@ -258,7 +274,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 		}
 	}
 	
-	protected ArrayList<T> getBeans(ResultSet rs)
+	protected ArrayList<T> getBeans(ResultSet resultSet)
 	{
 		try
 		{
@@ -266,7 +282,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			
 			if(getGroupColumns() != null)
 			{
-				while(rs.next())
+				while(resultSet.next())
 				{
 					if(beans == null)
 					{
@@ -276,16 +292,16 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 					T bean = null;
 					T lastBean = null;
 					
-					while(rs.getRow() > 0 && (bean = checkMergeBean(lastBean, parseBean(rs))) != null)
+					while(resultSet.getRow() > 0 && (bean = checkMergeBean(lastBean, parseBean(resultSet))) != null)
 					{
-						rs.next();
+						resultSet.next();
 						lastBean = bean;
 					}
 					
 					if(lastBean != null)
 					{
 						bean = lastBean;
-						rs.previous();
+						resultSet.previous();
 					}
 					
 					beans.add(bean);
@@ -293,14 +309,14 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			}
 			else
 			{
-				while(rs.next())
+				while(resultSet.next())
 				{
 					if(beans == null)
 					{
 						beans = new ArrayList<>();
 					}
 					
-					beans.add(parseBean(rs));
+					beans.add(parseBean(resultSet));
 				}
 			}
 			
@@ -354,93 +370,93 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 		}
 	}
 	
-	private Object getColumnValue(String generatedColumn, Field field, T bean, ResultSet rs)
+	private Object getColumnValue(String generatedColumn, Field field, T bean, ResultSet resultSet)
 	{
 		try
 		{
 			if(field.get(bean) instanceof String)
 			{
-				return rs.getString(generatedColumn);
+				return resultSet.getString(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Integer)
 			{
-				return rs.getInt(generatedColumn);
+				return resultSet.getInt(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Double)
 			{
-				return rs.getDouble(generatedColumn);
+				return resultSet.getDouble(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Float)
 			{
-				return rs.getDouble(generatedColumn);
+				return resultSet.getDouble(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Boolean)
 			{
-				return rs.getBoolean(generatedColumn);
+				return resultSet.getBoolean(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Short)
 			{
-				return rs.getShort(generatedColumn);
+				return resultSet.getShort(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Array)
 			{
-				return rs.getArray(generatedColumn);
+				return resultSet.getArray(generatedColumn);
 			}
 			else if(field.get(bean) instanceof InputStream)
 			{
-				return rs.getBinaryStream(generatedColumn);
+				return resultSet.getBinaryStream(generatedColumn);
 			}
 			else if(field.get(bean) instanceof BigDecimal)
 			{
-				return rs.getBigDecimal(generatedColumn);
+				return resultSet.getBigDecimal(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Blob)
 			{
-				return rs.getBlob(generatedColumn);
+				return resultSet.getBlob(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Byte)
 			{
-				return rs.getByte(generatedColumn);
+				return resultSet.getByte(generatedColumn);
 			}
 			else if(field.get(bean) instanceof byte[])
 			{
-				return rs.getBytes(generatedColumn);
+				return resultSet.getBytes(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Clob)
 			{
-				return rs.getClob(generatedColumn);
+				return resultSet.getClob(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Date)
 			{
-				return rs.getDate(generatedColumn);
+				return resultSet.getDate(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Ref)
 			{
-				return rs.getRef(generatedColumn);
+				return resultSet.getRef(generatedColumn);
 			}
 			else if(field.get(bean) instanceof RowId)
 			{
-				return rs.getRowId(generatedColumn);
+				return resultSet.getRowId(generatedColumn);
 			}
 			else if(field.get(bean) instanceof SQLXML)
 			{
-				return rs.getSQLXML(generatedColumn);
+				return resultSet.getSQLXML(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Time)
 			{
-				return rs.getTime(generatedColumn);
+				return resultSet.getTime(generatedColumn);
 			}
 			else if(field.get(bean) instanceof Timestamp)
 			{
-				return rs.getTimestamp(generatedColumn);
+				return resultSet.getTimestamp(generatedColumn);
 			}
 			else if(field.get(bean) instanceof URL)
 			{
-				return rs.getURL(generatedColumn);
+				return resultSet.getURL(generatedColumn);
 			}
 			else
 			{
-				return rs.getObject(generatedColumn);
+				return resultSet.getObject(generatedColumn);
 			}
 		}
 		catch(SQLException | IllegalArgumentException | IllegalAccessException e)

@@ -2,6 +2,7 @@ package me.gerenciar.sdao.dao;
 
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.List;
 
 import me.gerenciar.sdao.dao.filter.DAOFilter;
@@ -19,6 +20,12 @@ public interface GenericDAO<T extends Serializable>
 	public abstract List<T> selectAll(Connection connection, long starterIndex, long endIndex) throws Exception;
 	
 	public abstract List<T> select(Connection connection, long starterIndex, long endIndex, List<DAOFilter> daoFilters) throws Exception;
+	
+	public abstract ResultSet selectOneAsResultSet(Connection connection, Object... identifiers) throws Exception;
+	
+	public abstract ResultSet selectAllAsResultSet(Connection connection, long starterIndex, long endIndex) throws Exception;
+	
+	public abstract ResultSet selectAsResultSet(Connection connection, long starterIndex, long endIndex, List<DAOFilter> daoFilters) throws Exception;
 	
 	public abstract long countAll(Connection connection) throws Exception;
 	

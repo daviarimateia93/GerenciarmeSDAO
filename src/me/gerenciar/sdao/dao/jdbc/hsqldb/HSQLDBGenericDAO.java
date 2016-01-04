@@ -179,11 +179,11 @@ public abstract class HSQLDBGenericDAO<T extends Serializable> extends JDBCGener
 			sql = "SELECT COUNT(*) AS " + getLeftEscape() + "TOTAL" + getRightEscape() + " FROM " + getLeftEscape() + getTableName() + getRightEscape() + where + group;
 		}
 		
-		ResultSet rs = executeQuery(connection, sql, args.toArray());
+		ResultSet resultSet = executeQuery(connection, sql, args.toArray());
 		
-		if(rs.next())
+		if(resultSet.next())
 		{
-			return rs.getLong("TOTAL");
+			return resultSet.getLong("TOTAL");
 		}
 		else
 		{

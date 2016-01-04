@@ -43,13 +43,29 @@ public abstract class MySQLGenericDAO<T extends Serializable> extends JDBCGeneri
 	@Override
 	public T selectOne(Connection connection, Object... identifiers) throws Exception
 	{
-		String sql = "SELECT * FROM " + getLeftEscape() + getTableName() + getRightEscape() + " WHERE " + getIdentifiersColumnsTokensSequence();
-		
-		return getBean(executeQuery(connection, sql, identifiers));
+		return getBean(selectOneAsResultSet(connection, identifiers));
 	}
 	
 	@Override
 	public List<T> selectAll(Connection connection, long starterIndex, long endIndex) throws Exception
+	{
+		return getBeans(selectAllAsResultSet(connection, starterIndex, endIndex));
+	}
+	
+	@Override
+	public List<T> select(Connection connection, long starterIndex, long endIndex, List<DAOFilter> daoFilters) throws Exception
+	{
+		return getBeans(selectAsResultSet(connection, starterIndex, endIndex, daoFilters));
+	}
+	
+	public ResultSet selectOneAsResultSet(Connection connection, Object... identifiers) throws Exception
+	{
+		String sql = "SELECT * FROM " + getLeftEscape() + getTableName() + getRightEscape() + " WHERE " + getIdentifiersColumnsTokensSequence();
+		
+		return executeQuery(connection, sql, identifiers);
+	}
+	
+	public ResultSet selectAllAsResultSet(Connection connection, long starterIndex, long endIndex) throws Exception
 	{
 		List<DAOFilter> daoFilters = null;
 		
@@ -69,11 +85,10 @@ public abstract class MySQLGenericDAO<T extends Serializable> extends JDBCGeneri
 			daoFilters.add(daoFilter);
 		}
 		
-		return select(connection, starterIndex, endIndex, daoFilters);
+		return selectAsResultSet(connection, starterIndex, endIndex, daoFilters);
 	}
 	
-	@Override
-	public List<T> select(Connection connection, long starterIndex, long endIndex, List<DAOFilter> daoFilters) throws Exception
+	public ResultSet selectAsResultSet(Connection connection, long starterIndex, long endIndex, List<DAOFilter> daoFilters) throws Exception
 	{
 		List<Object> args = new ArrayList<>();
 		
@@ -151,7 +166,7 @@ public abstract class MySQLGenericDAO<T extends Serializable> extends JDBCGeneri
 		
 		String sql = "SELECT * FROM " + getLeftEscape() + getTableName() + getRightEscape() + filter;
 		
-		return getBeans(executeQuery(connection, sql, args.toArray()));
+		return executeQuery(connection, sql, args.toArray());
 	}
 	
 	@Override
@@ -179,11 +194,11 @@ public abstract class MySQLGenericDAO<T extends Serializable> extends JDBCGeneri
 			sql = "SELECT COUNT(*) AS " + getLeftEscape() + "TOTAL" + getRightEscape() + " FROM " + getLeftEscape() + getTableName() + getRightEscape() + where + group;
 		}
 		
-		ResultSet rs = executeQuery(connection, sql, args.toArray());
+		ResultSet resultSet = executeQuery(connection, sql, args.toArray());
 		
-		if(rs.next())
+		if(resultSet.next())
 		{
-			return rs.getLong("TOTAL");
+			return resultSet.getLong("TOTAL");
 		}
 		else
 		{

@@ -33,6 +33,7 @@ import me.gerenciar.sdao.annotation.TableName;
 import me.gerenciar.sdao.dao.GenericDAO;
 import me.gerenciar.sdao.factory.DAOFactory;
 import me.gerenciar.sdao.utils.MapHelper;
+import me.gerenciar.sdao.utils.ReflectionHelper;
 
 public abstract class JDBCGenericDAO<T extends Serializable> implements GenericDAO<T>
 {
@@ -93,7 +94,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 	{
 		List<String> identifiersColumns = new ArrayList<>();
 		
-		for(Field field : type.getDeclaredFields())
+		for(Field field : ReflectionHelper.getFields(type))
 		{
 			field.setAccessible(true);
 			
@@ -112,7 +113,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 	{
 		List<String> groupColumns = new ArrayList<>();
 		
-		for(Field field : type.getDeclaredFields())
+		for(Field field : ReflectionHelper.getFields(type))
 		{
 			field.setAccessible(true);
 			
@@ -131,7 +132,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 	{
 		List<String> generatedColumns = new ArrayList<>();
 		
-		for(Field field : type.getDeclaredFields())
+		for(Field field : ReflectionHelper.getFields(type))
 		{
 			field.setAccessible(true);
 			
@@ -181,7 +182,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 		{
 			for(String generatedColumn : getGeneratedColumns())
 			{
-				for(Field field : type.getDeclaredFields())
+				for(Field field : ReflectionHelper.getFields(type))
 				{
 					field.setAccessible(true);
 					

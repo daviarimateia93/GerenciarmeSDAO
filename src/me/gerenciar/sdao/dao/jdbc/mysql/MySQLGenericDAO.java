@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import me.gerenciar.sdao.DSimpleDAO;
+import me.gerenciar.sdao.GerenciarmeSDAO;
 import me.gerenciar.sdao.dao.filter.DAOFilter;
 import me.gerenciar.sdao.dao.jdbc.JDBCGenericDAO;
 import me.gerenciar.sdao.factory.DAOFactory;
@@ -357,7 +357,7 @@ public abstract class MySQLGenericDAO<T extends Serializable> extends JDBCGeneri
 					
 					if(i < daoFilters.size() - 1)
 					{
-						where += " " + (glue != null ? glue : DSimpleDAO.getConfiguration().getFilter().getGlue()) + " ";
+						where += " " + (glue != null ? glue : GerenciarmeSDAO.getConfiguration().getFilter().getGlue()) + " ";
 					}
 					
 					args.add(daoFilters.get(i).getValue());

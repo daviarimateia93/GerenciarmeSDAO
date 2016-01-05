@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.Savepoint;
 import java.util.Hashtable;
 
-import me.gerenciar.sdao.DSimpleDAO;
+import me.gerenciar.sdao.GerenciarmeSDAO;
 import me.gerenciar.sdao.dao.GenericDAO;
 import me.gerenciar.sdao.factory.jdbc.JDBCDAOFactory;
 
@@ -99,7 +99,7 @@ public abstract class DAOFactory
 	@SuppressWarnings("unchecked")
 	public <T extends GenericDAO<?>> T getDAO(String name)
 	{
-		String implementationPath = DSimpleDAO.getConfiguration().getPath().getDaoImplementationPath();
+		String implementationPath = GerenciarmeSDAO.getConfiguration().getPath().getDaoImplementationPath();
 		
 		try
 		{

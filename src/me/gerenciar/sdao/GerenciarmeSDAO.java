@@ -1,12 +1,12 @@
 package me.gerenciar.sdao;
 
-public class DSimpleDAO
+public class GerenciarmeSDAO
 {
 	private static boolean configured = false;
 	
 	private static ImutableConfiguration configuration = new ImutableConfiguration();
 	
-	private DSimpleDAO()
+	private GerenciarmeSDAO()
 	{
 		
 	}
@@ -27,7 +27,7 @@ public class DSimpleDAO
 		{
 			protected String address = "localhost";
 			protected int port = 3306;
-			protected String name = "dsimpledao";
+			protected String name = "gerenciarmesdao";
 			protected String username = "root";
 			protected String password = "";
 			
@@ -69,7 +69,7 @@ public class DSimpleDAO
 		
 		public static class ImutablePath
 		{
-			protected String daoImplementationPath = "com.daviarimateia.dsimpledao.repository.implementation";
+			protected String daoImplementationPath = "me.gerenciar.repository.implementation";
 			
 			public String getDaoImplementationPath()
 			{
@@ -159,25 +159,25 @@ public class DSimpleDAO
 		}
 	}
 	
-	public final static class DSimpleDAOException extends Exception
+	public final static class GerenciarmeSDAOException extends Exception
 	{
 		private static final long serialVersionUID = 1L;
 		
-		public DSimpleDAOException(String message)
+		public GerenciarmeSDAOException(String message)
 		{
 			super(message);
 		}
 	}
 	
-	public static void configure(ImutableConfiguration configuration) throws DSimpleDAOException
+	public static void configure(ImutableConfiguration configuration) throws GerenciarmeSDAOException
 	{
 		if(!configured)
 		{
-			DSimpleDAO.configuration = configuration;
+			GerenciarmeSDAO.configuration = configuration;
 		}
 		else
 		{
-			throw new DSimpleDAOException("DSimpleDAO is already configured!");
+			throw new GerenciarmeSDAOException("GerenciarmeSDAO is already configured!");
 		}
 	}
 }

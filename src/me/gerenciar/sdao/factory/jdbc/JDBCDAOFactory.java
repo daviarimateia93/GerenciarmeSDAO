@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
-import me.gerenciar.sdao.DSimpleDAO;
+import me.gerenciar.sdao.GerenciarmeSDAO;
 import me.gerenciar.sdao.factory.DAOFactory;
 
 public abstract class JDBCDAOFactory extends DAOFactory
@@ -49,7 +49,7 @@ public abstract class JDBCDAOFactory extends DAOFactory
 			
 			Class.forName(driverClassName);
 			
-			return DriverManager.getConnection("jdbc:" + typeValue + "://" + DSimpleDAO.getConfiguration().getDatabase().getAddress() + ":" + DSimpleDAO.getConfiguration().getDatabase().getPort() + "/" + DSimpleDAO.getConfiguration().getDatabase().getName(), DSimpleDAO.getConfiguration().getDatabase().getUsername(), DSimpleDAO.getConfiguration().getDatabase().getPassword());
+			return DriverManager.getConnection("jdbc:" + typeValue + "://" + GerenciarmeSDAO.getConfiguration().getDatabase().getAddress() + ":" + GerenciarmeSDAO.getConfiguration().getDatabase().getPort() + "/" + GerenciarmeSDAO.getConfiguration().getDatabase().getName(), GerenciarmeSDAO.getConfiguration().getDatabase().getUsername(), GerenciarmeSDAO.getConfiguration().getDatabase().getPassword());
 		}
 		catch(ClassNotFoundException | SQLException e)
 		{

@@ -250,40 +250,47 @@ public abstract class MySQLGenericDAO<T extends Serializable> extends JDBCGeneri
 		
 		if(getGroupColumns() != null)
 		{
-			for(Map<String, Object> map : maps)
+			if(maps.isEmpty())
 			{
-				List<DAOFilter> daoFilters = new ArrayList<>();
 				
-				for(String groupColumn : getGroupColumns())
+			}
+			else
+			{
+				for(Map<String, Object> map : maps)
 				{
-					DAOFilter daoFilter = new DAOFilter();
-					daoFilter.setName(groupColumn);
-					daoFilter.setOperator("=");
-					daoFilter.setValue(String.valueOf(map.get(groupColumn)));
+					List<DAOFilter> daoFilters = new ArrayList<>();
 					
-					daoFilters.add(daoFilter);
-				}
-				
-				List<T> selectedBeanAsList = select(connection, 0, 1, daoFilters);
-				
-				T selectedBean = null;
-				
-				if(selectedBeanAsList != null)
-				{
-					selectedBean = selectedBeanAsList.get(0);
-				}
-				
-				T deleteBean = mergeBeanOnUpdateToDelete(bean, selectedBean);
-				T insertBean = mergeBeanOnUpdateToInsert(bean, selectedBean);
-				
-				if(deleteBean != null)
-				{
-					delete(connection, deleteBean);
-				}
-				
-				if(insertBean != null)
-				{
-					insert(connection, insertBean);
+					for(String groupColumn : getGroupColumns())
+					{
+						DAOFilter daoFilter = new DAOFilter();
+						daoFilter.setName(groupColumn);
+						daoFilter.setOperator("=");
+						daoFilter.setValue(String.valueOf(map.get(groupColumn)));
+						
+						daoFilters.add(daoFilter);
+					}
+					
+					List<T> selectedBeanAsList = select(connection, 0, 1, daoFilters);
+					
+					T selectedBean = null;
+					
+					if(selectedBeanAsList != null)
+					{
+						selectedBean = selectedBeanAsList.get(0);
+					}
+					
+					T deleteBean = mergeBeanOnUpdateToDelete(bean, selectedBean);
+					T insertBean = mergeBeanOnUpdateToInsert(bean, selectedBean);
+					
+					if(deleteBean != null)
+					{
+						delete(connection, deleteBean);
+					}
+					
+					if(insertBean != null)
+					{
+						insert(connection, insertBean);
+					}
 				}
 			}
 		}

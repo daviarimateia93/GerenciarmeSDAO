@@ -274,21 +274,16 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 		}
 	}
 	
-	protected ArrayList<T> getBeans(ResultSet resultSet)
+	protected List<T> getBeans(ResultSet resultSet)
 	{
 		try
 		{
-			ArrayList<T> beans = null;
+			List<T> beans = new ArrayList<>();
 			
 			if(getGroupColumns() != null)
 			{
 				while(resultSet.next())
 				{
-					if(beans == null)
-					{
-						beans = new ArrayList<>();
-					}
-					
 					T bean = null;
 					T lastBean = null;
 					
@@ -311,11 +306,6 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			{
 				while(resultSet.next())
 				{
-					if(beans == null)
-					{
-						beans = new ArrayList<>();
-					}
-					
 					beans.add(parseBean(resultSet));
 				}
 			}

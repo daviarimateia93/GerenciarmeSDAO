@@ -1,4 +1,4 @@
-package me.gerenciar.sdao.utils;
+package me.gerenciar.sdao.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

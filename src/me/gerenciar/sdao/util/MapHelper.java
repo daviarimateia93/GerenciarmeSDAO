@@ -1,4 +1,4 @@
-package me.gerenciar.sdao.utils;
+package me.gerenciar.sdao.util;
 
 import java.util.Arrays;
 import java.util.List;

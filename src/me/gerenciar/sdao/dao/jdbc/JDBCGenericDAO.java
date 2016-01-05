@@ -32,8 +32,8 @@ import me.gerenciar.sdao.annotation.Identifier;
 import me.gerenciar.sdao.annotation.TableName;
 import me.gerenciar.sdao.dao.GenericDAO;
 import me.gerenciar.sdao.factory.DAOFactory;
-import me.gerenciar.sdao.utils.MapHelper;
-import me.gerenciar.sdao.utils.ReflectionHelper;
+import me.gerenciar.sdao.util.MapHelper;
+import me.gerenciar.sdao.util.ReflectionHelper;
 
 public abstract class JDBCGenericDAO<T extends Serializable> implements GenericDAO<T>
 {

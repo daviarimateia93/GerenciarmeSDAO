@@ -10,6 +10,8 @@ import me.gerenciar.sdao.factory.jdbc.JDBCDAOFactory;
 
 public abstract class DAOFactory
 {
+	private static final ThreadLocal<Connection> threadLocal = new ThreadLocal<>();
+	
 	public static final String TYPE_MYSQL = "MySQL";
 	public static final String TYPE_HSQLDB = "HSQLDB";
 	
@@ -78,6 +80,12 @@ public abstract class DAOFactory
 				{
 					return newConnection(type);
 				}
+				
+				@Override
+				public Connection newConnection(String address, int port, String name, String username, String password)
+				{
+					return newConnection(type, address, port, name, username, password);
+				}
 			};
 		}
 		
@@ -85,6 +93,8 @@ public abstract class DAOFactory
 	}
 	
 	public abstract Connection newConnection();
+	
+	public abstract Connection newConnection(String address, int port, String name, String username, String password);
 	
 	public abstract void close(Connection connection);
 	
@@ -105,9 +115,41 @@ public abstract class DAOFactory
 		{
 			return (T) Class.forName(implementationPath + "." + name).newInstance();
 		}
-		catch(ClassNotFoundException | InstantiationException | IllegalAccessException e)
+		catch(ClassNotFoundException | InstantiationException | IllegalAccessException exception)
 		{
 			return null;
 		}
+	}
+	
+	public void beginTransaction()
+	{
+		Connection connection = newConnection();
+		
+		beginTransaction(connection);
+		
+		threadLocal.set(connection);
+	}
+	
+	public void beginTransaction(String address, int port, String name, String username, String password)
+	{
+		Connection connection = newConnection(address, port, name, username, password);
+		
+		beginTransaction(connection);
+		
+		threadLocal.set(connection);
+	}
+	
+	public Connection getConnection()
+	{
+		return threadLocal.get();
+	}
+	
+	public void commit()
+	{
+		Connection connection = threadLocal.get();
+		
+		commit(connection);
+		
+		threadLocal.remove();
 	}
 }

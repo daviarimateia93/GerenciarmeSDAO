@@ -46,7 +46,7 @@ public class ReflectionHelper
 			}
 			catch(IllegalArgumentException | IllegalAccessException exception)
 			{
-				
+			
 			}
 		}
 	}
@@ -274,7 +274,7 @@ public class ReflectionHelper
 				return type.newInstance();
 			}
 		}
-		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
+		catch(InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException exception)
 		{
 			return null;
 		}
@@ -404,43 +404,25 @@ public class ReflectionHelper
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static <T> T invoke(Object instance, String methodName, Object... args) throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	public static Method getMethod(Class<?> type, String methodName, Class<?>[] parameterTypes) throws NoSuchMethodException
 	{
-		List<Class<?>> parameterTypes = new ArrayList<>();
-		
-		for(Object arg : args)
-		{
-			parameterTypes.add(arg.getClass());
-		}
+		boolean hasSuperclass = type.getSuperclass() != null;
 		
 		try
 		{
-			return (T) instance.getClass().getMethod(methodName, parameterTypes.toArray(new Class<?>[parameterTypes.size()])).invoke(instance, args);
+			return type.getMethod(methodName, parameterTypes);
+			
 		}
-		catch(NoSuchMethodException noSuchMethodException)
+		catch(NoSuchMethodException exception)
 		{
-			Method[] methods = instance.getClass().getMethods();
-			
-			if(methods != null)
+			if(hasSuperclass)
 			{
-				for(Method method : methods)
-				{
-					try
-					{
-						if(method.getName().equals(methodName))
-						{
-							return (T) method.invoke(instance, args);
-						}
-					}
-					catch(Exception exception)
-					{
-						
-					}
-				}
+				return getMethod(type.getSuperclass(), methodName, parameterTypes);
 			}
-			
-			throw noSuchMethodException;
+			else
+			{
+				throw exception;
+			}
 		}
 	}
 }

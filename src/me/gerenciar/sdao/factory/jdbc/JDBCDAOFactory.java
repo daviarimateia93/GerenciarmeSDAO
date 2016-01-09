@@ -17,6 +17,11 @@ public abstract class JDBCDAOFactory extends DAOFactory
 	
 	public Connection newConnection(Type type)
 	{
+		return newConnection(type, GerenciarmeSDAO.getConfiguration().getDatabase().getAddress(), GerenciarmeSDAO.getConfiguration().getDatabase().getPort(), GerenciarmeSDAO.getConfiguration().getDatabase().getName(), GerenciarmeSDAO.getConfiguration().getDatabase().getUsername(), GerenciarmeSDAO.getConfiguration().getDatabase().getPassword());
+	}
+	
+	public Connection newConnection(Type type, String address, int port, String name, String username, String password)
+	{
 		try
 		{
 			String driverClassName;
@@ -24,7 +29,7 @@ public abstract class JDBCDAOFactory extends DAOFactory
 			
 			switch(type)
 			{
-			
+				
 				case MYSQL:
 				{
 					driverClassName = "com.mysql.jdbc.Driver";
@@ -49,11 +54,11 @@ public abstract class JDBCDAOFactory extends DAOFactory
 			
 			Class.forName(driverClassName);
 			
-			return DriverManager.getConnection("jdbc:" + typeValue + "://" + GerenciarmeSDAO.getConfiguration().getDatabase().getAddress() + ":" + GerenciarmeSDAO.getConfiguration().getDatabase().getPort() + "/" + GerenciarmeSDAO.getConfiguration().getDatabase().getName(), GerenciarmeSDAO.getConfiguration().getDatabase().getUsername(), GerenciarmeSDAO.getConfiguration().getDatabase().getPassword());
+			return DriverManager.getConnection("jdbc:" + typeValue + "://" + address + ":" + port + "/" + name, username, password);
 		}
-		catch(ClassNotFoundException | SQLException e)
+		catch(ClassNotFoundException | SQLException exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -64,9 +69,9 @@ public abstract class JDBCDAOFactory extends DAOFactory
 		{
 			connection.close();
 		}
-		catch(Exception e)
+		catch(Exception exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -77,9 +82,9 @@ public abstract class JDBCDAOFactory extends DAOFactory
 		{
 			connection.setAutoCommit(false);
 		}
-		catch(SQLException e)
+		catch(SQLException exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -91,9 +96,9 @@ public abstract class JDBCDAOFactory extends DAOFactory
 			connection.commit();
 			connection.setAutoCommit(true);
 		}
-		catch(SQLException e)
+		catch(SQLException exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -104,9 +109,9 @@ public abstract class JDBCDAOFactory extends DAOFactory
 		{
 			connection.rollback();
 		}
-		catch(SQLException e)
+		catch(SQLException exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -117,9 +122,9 @@ public abstract class JDBCDAOFactory extends DAOFactory
 		{
 			connection.rollback(savepoint);
 		}
-		catch(SQLException e)
+		catch(SQLException exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 }

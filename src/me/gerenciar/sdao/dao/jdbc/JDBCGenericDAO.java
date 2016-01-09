@@ -269,9 +269,9 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			
 			return bean;
 		}
-		catch(Exception e)
+		catch(Exception exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -313,9 +313,9 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			
 			return beans;
 		}
-		catch(Exception e)
+		catch(Exception exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -355,9 +355,9 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 			
 			return stmt;
 		}
-		catch(SQLException e)
+		catch(SQLException exception)
 		{
-			throw new RuntimeException(e);
+			throw new RuntimeException(exception);
 		}
 	}
 	
@@ -450,7 +450,7 @@ public abstract class JDBCGenericDAO<T extends Serializable> implements GenericD
 				return resultSet.getObject(generatedColumn);
 			}
 		}
-		catch(SQLException | IllegalArgumentException | IllegalAccessException e)
+		catch(SQLException | IllegalArgumentException | IllegalAccessException exception)
 		{
 			return null;
 		}

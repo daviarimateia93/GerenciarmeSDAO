@@ -8,7 +8,7 @@ public class GerenciarmeSDAO
 	
 	private GerenciarmeSDAO()
 	{
-		
+	
 	}
 	
 	public static ImutableConfiguration getConfiguration()
@@ -67,19 +67,8 @@ public class GerenciarmeSDAO
 			}
 		}
 		
-		public static class ImutablePath
-		{
-			protected String daoImplementationPath = "me.gerenciar.repository.implementation";
-			
-			public String getDaoImplementationPath()
-			{
-				return daoImplementationPath;
-			}
-		}
-		
 		protected ImutableDatabase database = new ImutableDatabase();
 		protected ImutableFilter filter = new ImutableFilter();
-		protected ImutablePath path = new ImutablePath();
 		
 		public ImutableDatabase getDatabase()
 		{
@@ -89,11 +78,6 @@ public class GerenciarmeSDAO
 		public ImutableFilter getFilter()
 		{
 			return filter;
-		}
-		
-		public ImutablePath getPath()
-		{
-			return path;
 		}
 	};
 	
@@ -135,14 +119,6 @@ public class GerenciarmeSDAO
 			}
 		}
 		
-		public static class MutablePath extends ImutablePath
-		{
-			public void setDaoImplementationPath(String daoImplementationPath)
-			{
-				this.daoImplementationPath = daoImplementationPath;
-			}
-		}
-		
 		public void setDatabase(ImutableDatabase database)
 		{
 			this.database = database;
@@ -151,11 +127,6 @@ public class GerenciarmeSDAO
 		public void setFilter(ImutableFilter filter)
 		{
 			this.filter = filter;
-		}
-		
-		public void setPath(ImutablePath path)
-		{
-			this.path = path;
 		}
 	}
 	

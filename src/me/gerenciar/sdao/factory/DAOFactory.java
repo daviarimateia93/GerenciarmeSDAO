@@ -125,7 +125,7 @@ public abstract class DAOFactory
 				@Override
 				public Connection newConnection()
 				{
-					return newConnection(type);
+					return newConnection(null, null, null, null, null);
 				}
 				
 				@Override
@@ -155,16 +155,12 @@ public abstract class DAOFactory
 	
 	public void beginTransaction()
 	{
-		Connection connection = newConnection();
-		
-		beginTransaction(connection);
-		
-		threadLocalConnection.set(connection);
+		beginTransaction(null, null, null, null, null);
 	}
 	
 	public void beginTransaction(String address, Integer port, String name, String username, String password)
 	{
-		Connection connection = newConnection(address, port, name, username, password);
+		Connection connection = getConnection() == null ? newConnection(address, port, name, username, password) : getConnection();
 		
 		beginTransaction(connection);
 		
@@ -196,44 +192,35 @@ public abstract class DAOFactory
 	
 	public <T> void transactional(Runnable<T> runnable)
 	{
-		transactional(runnable, false, null, null, null, null, null);
+		transactional(runnable, null, null, null, null, null);
 	}
 	
 	public <T> void transactional(Runnable<T> runnable, String address, Integer port, String name, String username, String password)
 	{
-		transactional(runnable, false, address, port, name, username, password);
-	}
-	
-	public <T> void transactional(Runnable<T> runnable, boolean force)
-	{
-		transactional(runnable, force, null, null, null, null, null);
-	}
-	
-	public <T> void transactional(Runnable<T> runnable, boolean force, String address, Integer port, String name, String username, String password)
-	{
-		Connection connection = getConnection();
+		boolean newTransaction = false;
 		
-		if(connection != null || force)
+		if(getConnection() == null)
 		{
-			if(address == null || port == null || name == null || username == null)
-			{
-				beginTransaction();
-			}
-			else
-			{
-				beginTransaction(address, port, name, username, password);
-			}
+			beginTransaction(address, port, name, username, password);
+			
+			newTransaction = true;
 		}
 		
 		try
 		{
 			runnable.run();
 			
-			commit();
+			if(newTransaction)
+			{
+				commit();
+			}
 		}
 		catch(Exception exception)
 		{
-			rollback();
+			if(newTransaction)
+			{
+				rollback();
+			}
 		}
 	}
 }

@@ -17,13 +17,19 @@ public abstract class JDBCDAOFactory extends DAOFactory
 	
 	public Connection newConnection(Type type)
 	{
-		return newConnection(type, GerenciarmeSDAO.getConfiguration().getDatabase().getAddress(), GerenciarmeSDAO.getConfiguration().getDatabase().getPort(), GerenciarmeSDAO.getConfiguration().getDatabase().getName(), GerenciarmeSDAO.getConfiguration().getDatabase().getUsername(), GerenciarmeSDAO.getConfiguration().getDatabase().getPassword());
+		return newConnection(type, null, null, null, null, null);
 	}
 	
-	public Connection newConnection(Type type, String address, int port, String name, String username, String password)
+	public Connection newConnection(Type type, String address, Integer port, String name, String username, String password)
 	{
 		try
 		{
+			address = address == null ? GerenciarmeSDAO.getConfiguration().getDatabase().getAddress() : address;
+			port = port == null ? GerenciarmeSDAO.getConfiguration().getDatabase().getPort() : port;
+			name = name == null ? GerenciarmeSDAO.getConfiguration().getDatabase().getName() : name;
+			username = username == null ? GerenciarmeSDAO.getConfiguration().getDatabase().getUsername() : username;
+			password = password == null ? GerenciarmeSDAO.getConfiguration().getDatabase().getPassword() : password;
+			
 			String driverClassName;
 			String typeValue;
 			

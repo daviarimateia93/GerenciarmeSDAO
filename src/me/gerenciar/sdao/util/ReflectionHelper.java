@@ -155,12 +155,12 @@ public class ReflectionHelper
 	
 	public static boolean isNumeric(Field field, Object instance) throws IllegalArgumentException, IllegalAccessException
 	{
-		return (Short.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())) || isNumeric(field.get(instance));
+		return (Short.class.isAssignableFrom(field.getType()) || Integer.class.isAssignableFrom(field.getType()) || Long.class.isAssignableFrom(field.getType()) || Float.class.isAssignableFrom(field.getType()) || Double.class.isAssignableFrom(field.getType())) || isNumeric(field.get(instance));
 	}
 	
 	public static boolean isNumeric(Object object)
 	{
-		return object instanceof Short || object instanceof Integer || object instanceof Float || object instanceof Double;
+		return object instanceof Short || object instanceof Integer || object instanceof Long || object instanceof Float || object instanceof Double;
 	}
 	
 	public static boolean isBoolean(Field field, Object instance) throws IllegalArgumentException, IllegalAccessException
